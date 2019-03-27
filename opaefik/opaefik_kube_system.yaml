@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: opaefik
+  namespace: kube-system
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: opaefik
+  clusterIP: None
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opaefik
+  namespace: kube-system
+  labels:
+    app: opaefik
+spec:
+  selector:
+    matchLabels:
+      app: opaefik
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: opaefik
+    spec:
+      containers:
+      - image: opaefik:1.0
+        command: ["/opaefik"]
+        args: ["http://192.168.249.25:31756", "root:password@tcp(192.168.249.25:32306)/authorization_info"]
+        imagePullPolicy: IfNotPresent
+        name: opaefik
+        ports:
+        - containerPort: 8080

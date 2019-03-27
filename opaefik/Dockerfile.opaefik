@@ -1,0 +1,3 @@
+FROM scratch
+ADD opaefik /
+CMD ["/opaefik"]

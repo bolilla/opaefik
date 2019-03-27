@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dune
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: dune
+  clusterIP: None
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dune
+  labels:
+    app: dune
+spec:
+  selector:
+    matchLabels:
+      app: dune
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: dune
+    spec:
+      containers:
+      - image: dune-stuff:1.1
+        imagePullPolicy: IfNotPresent
+        name: dune
+        ports:
+        - containerPort: 80
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: dune
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    ingress.kubernetes.io/auth-type: forward
+    ingress.kubernetes.io/auth-url: "http://opaefik:8080"
+#    ingress.kubernetes.io/auth-url: "http://172.17.0.1:9099"
+spec:
+  rules:
+  - host: dune.minikube
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: dune
+          servicePort: 80
+

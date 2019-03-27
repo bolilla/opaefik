@@ -1,0 +1,20 @@
+borja@dev-ubuntu:~$ cat .kube/config
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority: /home/borja/.minikube/ca.crt
+    server: https://192.168.249.25:8443
+  name: minikube
+contexts:
+- context:
+    cluster: minikube
+    user: minikube
+  name: minikube
+current-context: minikube
+kind: Config
+preferences: {}
+users:
+- name: minikube
+  user:
+    client-certificate: /home/borja/.minikube/client.crt
+    client-key: /home/borja/.minikube/client.key
